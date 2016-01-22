@@ -40,20 +40,20 @@ class TemplateRoute extends AbstractRoute
             return false;
         }
 
-        $template = trim(substr($request->getUri()->getPath(), strlen($this->routePath)), '/');
+        $templateFile = trim(substr($request->getUri()->getPath(), strlen($this->routePath)), '/');
 
-        if (!$template) {
-            $template = 'index';
+        if (!$templateFile) {
+            $templateFile = 'index';
         }
 
-        $template = $this->templateDir.$template.$this->templateExtension;
+        $template = $this->templateDir.$templateFile.$this->templateExtension;
 
         if (!is_file($template)) {
             throw new NoMatchingRouteException('No matching route for request "'.$request->getUri()->getPath().'"');
         }
 
         return new RouteData($this->name, 
-            array_merge(['_view' => ['text/html' => $template]], $this->values), $this->handler);
+            array_merge(['template' => $templateFile, '_view' => ['text/html' => $template]], $this->values), $this->handler);
     }
 
     public function buildUri(RouteData $routeData, $language = null)
